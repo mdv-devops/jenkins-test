@@ -15,10 +15,14 @@ pipeline {
     stage('Check connections') {     
       steps {
         container('kubectl') {
-          withCredentials([file(credentialsId: 'config-boints-prod', variable: 'KUBECONFIG')])
-          withAWS(credentials: 'aws-credentials')
+//          withCredentials([file(credentialsId: 'config-boints-prod', variable: 'KUBECONFIG')])
+          withCredentials([file[
+          credentialsId: 'aws-credentials',
+          accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+          secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+          ]])
           {
-            sh 'kubectl cluster-info'
+            sh 'aws s3 ls'
           }
         }
       }
