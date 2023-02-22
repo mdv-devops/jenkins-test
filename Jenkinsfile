@@ -1,3 +1,4 @@
+String credentialsId = 'aws-credentials'
 pipeline {
 
   options {
@@ -17,7 +18,7 @@ pipeline {
         container('kubectl') {
           withCredentials([[
             $class: 'AmazonWebServicesCredentialsBinding',
-            credentialsId: 'aws-credentials',
+            credentialsId: credentialsId,
             accessKeyVariable: 'AWS_ACCESS_KEY_ID',
             secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
           ]])
