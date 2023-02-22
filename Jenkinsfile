@@ -3,23 +3,24 @@ pipeline {
   options {
     ansiColor('xterm')
   }
+
   agent {
     kubernetes {
       yamlFile 'builder.yaml'
     }
   }
+
   stages {
-    stage('Check connections') {
+    stage('Check connections') {     
       steps {
         container('kubectl') {
           withCredentials([[
             $class: 'AmazonWebServicesCredentialsBinding',
             credentialsId: credentialsId,
             accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
-            file(credentialsId: 'config-boints-prod', variable: 'KUBECONFIG')
+            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
           ]]) {
-            sh 'kubectl cluster-info'
+            sh 'echo "test"'
           }
         }
       }
