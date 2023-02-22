@@ -24,8 +24,6 @@ pipeline {
           ]]) {
             sh 'echo "test"'
           }
-        }
-        container('kubectl') {
           withCredentials([file(credentialsId: 'config-boints-prod', variable: 'KUBECONFIG')]) {
             sh 'kubectl cluster-info'
           }
