@@ -20,9 +20,9 @@ pipeline {
             $class: 'AmazonWebServicesCredentialsBinding',
             credentialsId: credentialsId,
             accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
-            credentialsId: 'config-boints-prod',
-            variable: 'KUBECONFIG'
+            secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'],
+            [
+            file(credentialsId: 'config-boints-prod', variable: 'KUBECONFIG')
           ]]) {
             sh 'kubectl cluster-info'
           }
