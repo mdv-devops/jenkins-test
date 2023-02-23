@@ -16,7 +16,7 @@ pipeline {
       steps {
         container('kubectl') {
           withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-boints-prod', variable: 'KUBECONFIG')]) {
-            sh 'sleep 10000'
+            sh 'kubectl cluster-info'
           }
         }
       }
