@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
   - name: kubectl
-    image: marinyuk/kubectl:v-1.0.0
+    image: marinyuk/kubectl:v-1.0.1
     command:
     - /bin/cat
     tty: true
