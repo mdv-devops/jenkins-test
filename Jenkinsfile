@@ -15,8 +15,26 @@ pipeline {
     stage('Check connections') {     
       steps {
         container('kubectl') {
-          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-boints-prod', variable: 'KUBECONFIG')]) {
-            sh 'sleep 1000'
+          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
+            sh 'kubectl get ns'
+          }
+        }
+      }
+    }
+    stage('Init') {     
+      steps {
+        container('kubectl') {
+          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
+            sh 'terraform init'
+          }
+        }
+      }
+    }
+    stage('Plan') {     
+      steps {
+        container('kubectl') {
+          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
+            sh 'terraform plan'
           }
         }
       }
