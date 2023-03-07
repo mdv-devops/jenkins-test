@@ -26,6 +26,7 @@ pipeline {
           withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG'), gitUsernamePassword(credentialsId: 'GitHub', gitToolName: 'Default')]) {
             sh 'sed -i "s/GODADDY_KEY/${GODADDY_KEY}/" main.tf'
             sh 'sed -i "s/GODADDY_SECRET/${GODADDY_SECRET}/" main.tf'
+            sh 'cat main.tf'
             sh 'terraform init'
           }
         }
