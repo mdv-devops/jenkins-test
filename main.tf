@@ -40,7 +40,7 @@ locals {
   db_host_wr           = "winmoney-stage-db.cbgejhy5hdtp.us-east-1.rds.amazonaws.com"
   db_host_rr           = "winmoney-stage-db.cbgejhy5hdtp.us-east-1.rds.amazonaws.com"
   repository           = "max3014"
-  tag                  = "win-v2.68"
+  tag                  = "win-v2.69"
   dns_records = [
     "${local.dns_prefix}-auth${local.environment}.${local.domain_name}",
     "${local.dns_prefix}-balance${local.environment}.${local.domain_name}",
