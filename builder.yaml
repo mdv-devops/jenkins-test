@@ -12,6 +12,8 @@ spec:
     volumeMounts:
     - name: kube-config
       mountPath: /root/.kube/
+    - name: kaniko-secret
+      mountPath: /root/.docker
   - name: kaniko
     image: gcr.io/kaniko-project/executor:debug
     command:
