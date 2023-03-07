@@ -19,8 +19,8 @@ provider "kubernetes" {
 }
 
 provider "godaddy" {
-  key    = "e5NPwrdhq68m_PkvEPmteDJi2HQLRiAawvC"
-  secret = "Uch25ENz6Hpwp5yzZ5Uct2"
+  key    = GODADDY_KEY
+  secret = GODADDY_SECRET
 }
 
 provider "aws" {
