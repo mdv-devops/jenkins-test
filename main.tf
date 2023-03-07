@@ -1,4 +1,11 @@
 terraform {
+  backend "s3" {
+    bucket         = "boints-terraform-state"
+    key            = "kubernetes/winmoney-stage/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "tfstate_locks"
+    encrypt        = true
+  }
   required_providers {
     godaddy = {
       source  = "n3integration/godaddy"
@@ -58,7 +65,7 @@ locals {
     "${local.dns_prefix}-schedule${local.environment}"
   ]
 }
-
+/*
 module "dns_records" {
   source           = "github.com/Boints/terraform-modules/dns//"
   dns_recrord_name = local.dns_recrord_name
@@ -67,7 +74,7 @@ module "dns_records" {
   record_type      = local.record_type
   ttl              = local.ttl
 }
-
+*/
 module "common" {
   source     = "github.com/Boints/terraform-modules/common/"
   project    = local.project
