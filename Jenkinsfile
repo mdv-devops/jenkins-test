@@ -15,9 +15,7 @@ pipeline {
       steps {
         container('kubectl') {
           withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
-            ansiColor('xterm') {
-              sh 'kubectl get ns'
-            }
+            sh 'kubectl get ns'
           }
         }
       }
@@ -26,9 +24,7 @@ pipeline {
       steps {
         container('kubectl') {
           withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG'), gitUsernamePassword(credentialsId: 'GitHub', gitToolName: 'Default')]) {
-            ansiColor('xterm') {
-              sh 'terraform init'
-            }
+            sh 'terraform init'
           }
         }
       }
@@ -37,9 +33,7 @@ pipeline {
       steps {
         container('kubectl') {
           withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
-            ansiColor('xterm') {
-              sh 'terraform plan'
-            }
+            sh 'terraform plan'
           }
         }
       }
@@ -48,20 +42,7 @@ pipeline {
       steps {
         container('kubectl') {
           withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
-            ansiColor('xterm') {
-              sh 'terraform apply --auto-approve'
-            }
-          }
-        }
-      }
-    }
-    stage('Show') {     
-      steps {
-        container('kubectl') {
-          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
-            ansiColor('xterm') {
-              sh 'terraform show'
-            }
+            sh 'terraform destroy --auto-approve'
           }
         }
       }
