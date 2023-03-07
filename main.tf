@@ -27,11 +27,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-
-output "elb" {
-  value = module.dns_records.elb.dns_name
-}
-
 locals {
   project              = "winmoney-stage"
   service_account_name = module.common.service_account_name
