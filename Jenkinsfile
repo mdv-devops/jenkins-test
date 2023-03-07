@@ -39,5 +39,14 @@ pipeline {
         }
       }
     }
+    stage('Apply') {     
+      steps {
+        container('kubectl') {
+          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
+            sh 'terraform apply --auto-approve'
+          }
+        }
+      }
+    }
   }
 }

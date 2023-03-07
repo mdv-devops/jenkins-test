@@ -101,7 +101,7 @@ module "auth" {
     module.common
   ]
 }
-
+/*
 module "balance" {
   source = "github.com/Boints/terraform-modules/microservices/"
 
@@ -181,7 +181,7 @@ module "schedule" {
     module.common
   ]
 }
-/*
+
 module "appsflyer-provider" {
   source = "github.com/Boints/terraform-modules/microservices/"
 
