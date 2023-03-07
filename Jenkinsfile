@@ -1,4 +1,3 @@
-String credentialsId = 'aws-credentials'
 pipeline {
   options {
     ansiColor('xterm')
@@ -16,7 +15,9 @@ pipeline {
       steps {
         container('kubectl') {
           withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
-            sh 'kubectl get ns'
+            ansiColor('xterm') {
+              sh 'kubectl get ns'
+            }
           }
         }
       }
@@ -25,7 +26,9 @@ pipeline {
       steps {
         container('kubectl') {
           withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG'), gitUsernamePassword(credentialsId: 'GitHub', gitToolName: 'Default')]) {
-            sh 'terraform init'
+            ansiColor('xterm') {
+              sh 'terraform init'
+            }
           }
         }
       }
@@ -34,7 +37,9 @@ pipeline {
       steps {
         container('kubectl') {
           withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
-            sh 'terraform plan'
+            ansiColor('xterm') {
+              sh 'terraform plan'
+            }
           }
         }
       }
@@ -43,10 +48,36 @@ pipeline {
       steps {
         container('kubectl') {
           withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
-            sh 'terraform destroy --auto-approve'
+            ansiColor('xterm') {
+              sh 'terraform apply --auto-approve'
+            }
           }
         }
       }
     }
+    stage('Show') {     
+      steps {
+        container('kubectl') {
+          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
+            ansiColor('xterm') {
+              sh 'terraform show'
+            }
+          }
+        }
+      }
+    }
+    currentBuild.result = 'SUCCESS'
+  }
+}
+catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException flowError) {
+  currentBuild.result = 'ABORTED'
+}
+catch (err) {
+  currentBuild.result = 'FAILURE'
+  throw err
+}
+finally {
+  if (currentBuild.result == 'SUCCESS') {
+    currentBuild.result = 'SUCCESS'
   }
 }
