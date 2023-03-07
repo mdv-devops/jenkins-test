@@ -19,8 +19,8 @@ provider "kubernetes" {
 }
 
 provider "godaddy" {
-  key    = GODADDY_KEY
-  secret = GODADDY_SECRET
+  key    = "GODADDY_KEY"
+  secret = "GODADDY_SECRET"
 }
 
 provider "aws" {
