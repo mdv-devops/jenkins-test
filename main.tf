@@ -1,11 +1,11 @@
 terraform {
-  //  backend "s3" {
-  //    bucket         = "boints-terraform-state"
-  //    key            = "kubernetes/winmoney-stage/terraform.tfstate"
-  //    region         = "us-east-1"
-  //    dynamodb_table = "tfstate_locks"
-  //    encrypt        = true
-  //  }
+  backend "s3" {
+    bucket         = "boints-terraform-state"
+    key            = "kubernetes/winmoney-stage/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "tfstate_locks"
+    encrypt        = true
+  }
   required_providers {
     godaddy = {
       source  = "n3integration/godaddy"
