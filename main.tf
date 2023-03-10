@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket         = "boints-terraform-state"
-    key            = "kubernetes/winmoney-stage/terraform.tfstate"
+    key            = "kubernetes/winmoney-stage/backend/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "tfstate_locks"
     encrypt        = true
@@ -11,6 +11,12 @@ terraform {
       source  = "n3integration/godaddy"
       version = "~> 1.9.0"
     }
+    kubernetes = {
+      version = "= 2.18.1"
+    }
+    aws = {
+      version = "= 4.58.0"
+    }
   }
 }
 
@@ -19,26 +25,25 @@ provider "kubernetes" {
 }
 
 provider "godaddy" {
-  key    = "e5NPwrdhq68m_PkvEPmteDJi2HQLRiAawvC"
-  secret = "Uch25ENz6Hpwp5yzZ5Uct2"
+  key    = "GODADDY_KEY"
+  secret = "GODADDY_SECRET"
 }
 
 provider "aws" {
   region = "us-east-1"
 }
-
 locals {
-  project         = "winmoney-stage"
-  balancer_name   = "a02a312bbb50d46e8a24b31c6175c0b4"
-  domain_name     = "playtowinapps.com"
-  dns_prefix      = "winmoney"
-  prefix          = "winmoney"
-  environment     = "-stage"
-  db_host_wr      = "winmoney-stage-db.cbgejhy5hdtp.us-east-1.rds.amazonaws.com"
-  db_host_rr      = "winmoney-stage-db.cbgejhy5hdtp.us-east-1.rds.amazonaws.com"
-  repository      = "max3014"
-  tag             = "win-v2.69"
-  alternative_tag = "win-v3.7"
+  project       = "winmoney-stage"
+  balancer_name = "a02a312bbb50d46e8a24b31c6175c0b4"
+  domain_name   = "playtowinapps.com"
+  dns_prefix    = "winmoney"
+  prefix        = "winmoney"
+  environment   = "-stage"
+  db_host_wr    = "winmoney-stage-db.cbgejhy5hdtp.us-east-1.rds.amazonaws.com"
+  db_host_rr    = "winmoney-stage-db.cbgejhy5hdtp.us-east-1.rds.amazonaws.com"
+  repository    = "max3014"
+  backend_tag   = "win-v2.69"
+  frontend_tag  = "win-v3.7"
   dns_records = [
     "${local.dns_prefix}-auth${local.environment}.${local.domain_name}",
     "${local.dns_prefix}-balance${local.environment}.${local.domain_name}",
@@ -92,7 +97,7 @@ module "auth" {
   service_account_name      = local.service_account_name
   prefix                    = local.prefix
   microservice              = "auth"
-  image                     = "${local.repository}/auth:${local.tag}"
+  image                     = "${local.repository}/auth:${local.backend_tag}"
   deployment_replicas       = 1
   microservice_dns_record   = "${local.dns_prefix}-auth${local.environment}.${local.domain_name}"
   deployment_cpu_limit      = "400m"
@@ -114,7 +119,7 @@ module "balance" {
   service_account_name      = local.service_account_name
   prefix                    = local.prefix
   microservice              = "balance"
-  image                     = "${local.repository}/balance:${local.tag}"
+  image                     = "${local.repository}/balance:${local.backend_tag}"
   deployment_replicas       = 1
   microservice_dns_record   = "${local.dns_prefix}-balance${local.environment}.${local.domain_name}"
   deployment_cpu_limit      = "400m"
@@ -136,7 +141,7 @@ module "earning" {
   service_account_name      = local.service_account_name
   prefix                    = local.prefix
   microservice              = "earning"
-  image                     = "${local.repository}/earning:${local.tag}"
+  image                     = "${local.repository}/earning:${local.backend_tag}"
   deployment_replicas       = 1
   microservice_dns_record   = "${local.dns_prefix}-earning${local.environment}.${local.domain_name}"
   deployment_cpu_limit      = "400m"
@@ -158,7 +163,7 @@ module "leaderboard" {
   service_account_name      = local.service_account_name
   prefix                    = local.prefix
   microservice              = "leaderboard"
-  image                     = "${local.repository}/leaderboard:${local.tag}"
+  image                     = "${local.repository}/leaderboard:${local.backend_tag}"
   deployment_replicas       = 1
   microservice_dns_record   = "${local.dns_prefix}-leaderboard${local.environment}.${local.domain_name}"
   deployment_cpu_limit      = "400m"
@@ -180,7 +185,7 @@ module "schedule" {
   service_account_name      = local.service_account_name
   prefix                    = local.prefix
   microservice              = "schedule"
-  image                     = "${local.repository}/schedule:${local.tag}"
+  image                     = "${local.repository}/schedule:${local.backend_tag}"
   deployment_replicas       = 1
   microservice_dns_record   = "${local.dns_prefix}-schedule${local.environment}.${local.domain_name}"
   deployment_cpu_limit      = "400m"
@@ -204,7 +209,7 @@ module "panel" {
   command                   = []
   args                      = []
   microservice              = "panel"
-  image                     = "${local.repository}/panel:${local.alternative_tag}"
+  image                     = "${local.repository}/panel:${local.frontend_tag}"
   deployment_replicas       = 1
   microservice_dns_record   = "${local.dns_prefix}-panel${local.environment}.${local.domain_name}"
   app_protocol              = "http"
@@ -250,7 +255,7 @@ module "appsflyer-provider" {
   service_account_name      = local.service_account_name
   prefix                    = local.prefix
   microservice              = "appsflyer-provider"
-  image                     = "${local.repository}/appsflyer-provider:${local.tag}"
+  image                     = "${local.repository}/appsflyer-provider:${local.backend_tag}"
   deployment_replicas       = 1
   microservice_dns_record   = "${local.dns_prefix}-appsflyer-provider${local.environment}.${local.domain_name}"
   deployment_cpu_limit      = "1m"
@@ -270,7 +275,7 @@ module "stats" {
   service_account_name      = local.service_account_name
   prefix                    = local.prefix
   microservice              = "stats"
-  image                     = "${local.repository}/stats:${local.tag}"
+  image                     = "${local.repository}/stats:${local.backend_tag}"
   deployment_replicas       = 1
   microservice_dns_record   = "${local.dns_prefix}-stats${local.environment}.${local.domain_name}"
   deployment_cpu_limit      = "1m"
@@ -292,7 +297,7 @@ module "sentinel" {
   service_port              = 9464
   container_port            = 9464
   microservice              = "sentinel"
-  image                     = "${local.repository}/sentinel:${local.tag}"
+  image                     = "${local.repository}/sentinel:${local.backend_tag}"
   deployment_replicas       = 1
   microservice_dns_record   = "${local.dns_prefix}-sentinel{local.environment}.${local.domain_name}"
   app_protocol              = "http"
@@ -313,7 +318,7 @@ module "reward" {
   service_account_name      = local.service_account_name
   prefix                    = local.prefix
   microservice              = "reward"
-  image                     = "${local.repository}/reward:${local.tag}"
+  image                     = "${local.repository}/reward:${local.backend_tag}"
   deployment_replicas       = 1
   microservice_dns_record   = "${local.dns_prefix}-reward${local.environment}.${local.domain_name}"
   deployment_cpu_limit      = "1m"
@@ -326,3 +331,15 @@ module "reward" {
   ]
 }
 */
+output "service_account_name" {
+  value = local.service_account_name
+}
+output "config_map_name" {
+  value = local.config_map_name
+}
+output "namespace" {
+  value = local.namespace
+}
+output "gateway" {
+  value = local.gateway
+}

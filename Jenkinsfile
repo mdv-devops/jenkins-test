@@ -23,10 +23,9 @@ pipeline {
     stage('Init') {     
       steps {
         container('kubectl') {
-          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG'), gitUsernamePassword(credentialsId: 'GitHub', gitToolName: 'Default')]) {
+          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), gitUsernamePassword(credentialsId: 'GitHub', gitToolName: 'Default')]) {
             sh 'sed -i "s/GODADDY_KEY/${GODADDY_KEY}/" main.tf'
             sh 'sed -i "s/GODADDY_SECRET/${GODADDY_SECRET}/" main.tf'
-            sh 'cat main.tf'
             sh 'terraform init'
           }
         }
@@ -35,7 +34,7 @@ pipeline {
     stage('Plan') {     
       steps {
         container('kubectl') {
-          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
+          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
             sh 'terraform plan'
           }
         }
@@ -44,7 +43,7 @@ pipeline {
     stage('Apply') {     
       steps {
         container('kubectl') {
-          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
+          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
             sh 'terraform apply --auto-approve'
           }
         }
@@ -53,7 +52,7 @@ pipeline {
     stage('Show') {     
       steps {
         container('kubectl') {
-          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'), file(credentialsId: 'config-winmoney-stage', variable: 'KUBECONFIG')]) {
+          withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws-credentials', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
             sh 'terraform show'
           }
         }
