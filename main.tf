@@ -204,7 +204,7 @@ module "panel" {
   command                   = []
   args                      = []
   microservice              = "panel"
-  image                     = "${local.repository}/panel:${var.alternative_tag}"
+  image                     = "${local.repository}/panel:${local.alternative_tag}"
   deployment_replicas       = 1
   microservice_dns_record   = "${local.dns_prefix}-panel${local.environment}.${local.domain_name}"
   app_protocol              = "http"
