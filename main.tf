@@ -1,3 +1,4 @@
+// Test Jenkins pipeline
 terraform {
   backend "s3" {
     bucket         = "boints-terraform-state"
@@ -343,6 +344,3 @@ output "namespace" {
 output "gateway" {
   value = local.gateway
 }
-
-
-
